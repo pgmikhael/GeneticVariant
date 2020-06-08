@@ -12,18 +12,19 @@ POSS_VAL_NOT_LIST = 'Flag {} has an invalid list of values: {}. Length of list m
 def parse_args():
      parser = argparse.ArgumentParser(description='MLPIPE')
 
-     parser.add_argument('--oauth2_path', type = str, default = 'secrets/oauth_cred.json')
+     parser.add_argument('--oauth2_path', type = str, default = '/Users/petermikhael/Projects/oauth_cred.json')
 
      # Dataset
      ## Development
-     parser.add_argument('--dataset', type = str, default = 'regression')
-     parser.add_argument('--data_dir', type = str, default = 'Data/')
-     parser.add_argument('--img_dir', type = str, default = 'Data/pngs/')
-     parser.add_argument('--json_dataset', type = str, default = 'ig_cnn')
-     parser.add_argument('--task', type = str, default = 'likes')
+     parser.add_argument('--dataset', type = str, default = 'variant_names')
+     parser.add_argument('--data_dir', type = str, default = '/Users/petermikhael/Google Drive/MIT/GeneticVariant/Varients_proteins_genetranscripts/')
+     parser.add_argument('--max_str_len',  type=int, default = 16, help='max string length')
 
+     parser.add_argument('--num_layers', type = int, default = 1, help = 'num of rnns to stack')
+     parser.add_argument('--hidden_dim', type = int, default = 4, help = 'size of hidden state vector')
+     
      # Model
-     parser.add_argument('--model_name', type = str, default = 'vgg', help = 'Name of DNN')
+     parser.add_argument('--model_name', type = str, default = 'gru', help = 'Name of DNN')
      parser.add_argument('--trained_on_imagenet', action='store_true', default = False, help = 'torchvision weights from imagenet trained models')
 
      # Transformers
@@ -37,9 +38,8 @@ def parse_args():
 
      # Dataset stats
      parser.add_argument('--get_dataset_stats', action='store_true', default = False, help = 'whether to get mean, std of training set')
-     parser.add_argument('--img_size',  type=int, nargs='+', default=[256, 256], help='width and height of image in pixels. [default: [256,256]')
-     parser.add_argument('--img_mean', type=float, nargs='+', default=[0.4979, 0.4665, 0.4492], help='mean value of img pixels. Per channel. ')
-     parser.add_argument('--img_std', type=float, nargs='+', default=[0.2853, 0.2678, 0.2685 ], help='std of img pixels. Per channel. ')
+     parser.add_argument('--input_dim',  type=int, default=94, help='input dim size')
+     parser.add_argument('--seq_len',  type=int, default=16, help='input dim size')
 
      # Workers and GPUS
      parser.add_argument('--num_workers', type=int, default = 0, help='std of img pixels. Per channel. ')
@@ -59,9 +59,9 @@ def parse_args():
      parser.add_argument('--use_dropout', action = 'store_true', default = False, help = 'if using dropout ')
      parser.add_argument('--num_epochs', type = int, default = 100, help = 'number of epochs')
      parser.add_argument('--batch_size', type = int, default = 10, help = 'batch size')
-     parser.add_argument('--burn_in', type = int, default = 10, help = 'number of epochs before saving improved model')
+     parser.add_argument('--burn_in', type = int, default = 1, help = 'number of epochs before saving improved model')
      parser.add_argument('--optimizer', type = str, default = 'adam', help = 'optimizer function')
-     parser.add_argument('--criterion', type = str, default = 'binary_cross_entropy', help = 'optimizer function')
+     parser.add_argument('--criterion', type = str, default = 'cross_entropy', help = 'optimizer function')
      parser.add_argument('--tuning_metric', type = str, default= 'dev_loss', help = 'metric on which to tune model')
      
      # Inference
@@ -71,8 +71,8 @@ def parse_args():
      # Directories and Files
      parser.add_argument('--viz_dir', type = str, help = 'dir to save visualizations')
      parser.add_argument('--snapshot_path', type = str, help = 'path to snapshot if using saved model')
-     parser.add_argument('--results_dir', type = str, default = '/Users/petermikhael/pgmikhael.github.io/ig_models_results', help = 'path to results dir')
-     parser.add_argument('--save_dir', type = str, default = '/Users/petermikhael/pgmikhael.github.io/ig_models_results', help = 'directory of models')
+     parser.add_argument('--results_dir', type = str, default = '/Users/petermikhael/Projects/results', help = 'path to results dir')
+     parser.add_argument('--save_dir', type = str, default = '/Users/petermikhael/Projects/results', help = 'directory of models')
      parser.add_argument('--results_path', type = str, help = 'defined either automatically by dispatcher.py or time in main.py. Keep without default')
 
      # CUDA

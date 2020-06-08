@@ -1,1 +1,1 @@
-from datasets.dataset import Dataset
+from datasets.dataset import GeneticVariants

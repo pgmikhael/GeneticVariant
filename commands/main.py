@@ -30,31 +30,28 @@ if __name__ == '__main__':
     
     repo = git.Repo(search_parent_directories=True)
     commit  = repo.head.object
-    print("\nIG Predictor main running by author: {} \ndate:{}, \nfrom commit: {} -- {}".format(
+    print("\nGenetic Variant main running by author: {} \ndate:{}, \nfrom commit: {} -- {}".format(
         commit.author, time.strftime(DATE_FORMAT_STR, time.localtime(commit.committed_date)),
         commit.hexsha, commit.message))
 
     if args.get_dataset_stats:
-        print("\nComputing image mean and std...")
-        args.img_mean, args.img_std = get_dataset_stats(args)
-        print('Mean: {}'.format(args.img_mean))
-        print('Std: {}'.format(args.img_std))
+        print("\nComputing sequence length...")
+        args.seq_len = get_dataset_stats(args)
+        print('Sequence length = {}'.format(args.seq_len))
 
     # Obtain datasets
     if args.train_phase:
         print("\nLoading train and dev data...")
-        train_data = get_dataset(args, args.train_img_transformers, args.train_tnsr_transformers, 'train')
-        dev_data = get_dataset(args, args.test_img_transformers, args.test_tnsr_transformers, 'dev')
+        train_data = get_dataset(args, 'train')
+        dev_data = get_dataset(args, 'dev')
 
     if args.test_phase:
         if not args.train_phase:
             print("\nLoading dev data...")
-            dev_data = get_dataset(args, args.test_img_transformers, args.test_tnsr_transformers, 'dev')
+            dev_data = get_dataset(args, 'dev')
         print("\nLoading test data...")
-        test_data = get_dataset(args, args.test_img_transformers, args.test_tnsr_transformers, 'test')
+        test_data = get_dataset(args, 'test')
     
-    # Get model output dimensions, before classification
-    args.rolled_size = get_rolled_out_size(args)
 
     # Load model
     model, optimizer = get_model(args)

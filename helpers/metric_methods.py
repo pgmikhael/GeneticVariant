@@ -25,16 +25,22 @@ def compute_eval_metrics(golds, preds, probs, loss, args, stats_dict, mode):
 
 def classification_metrics(golds, preds, probs, loss, args, stats_dict, mode):
     accuracy = sklearn.metrics.accuracy_score(y_true=golds, y_pred=preds)
-    precision = sklearn.metrics.precision_score(y_true=golds, y_pred=preds)
-    recall = sklearn.metrics.recall_score(y_true=golds, y_pred=preds)
-    f1 = sklearn.metrics.f1_score(y_true=golds, y_pred=preds)
     confusion_matrix = sklearn.metrics.confusion_matrix(golds, preds) 
-    try:
+
+    if args.num_classes == 2:
+        average = None
         auc = sklearn.metrics.roc_auc_score(golds, probs, average='samples')
+    else:
+        auc = 'NA'
+        average = 'macro'
+    
+    try:
+        precision = sklearn.metrics.precision_score(y_true=golds, y_pred=preds, average=average)
+        recall = sklearn.metrics.recall_score(y_true=golds, y_pred=preds, average=average)        
+        f1 = sklearn.metrics.f1_score(y_true=golds, y_pred=preds, average=average)  
     except Exception as e:
         warnings.warn("Failed to calculate metrics because {}".format(e))
-        auc = 'NA'
-
+    
     stats_dict['{}_accuracy'.format(mode)].append(accuracy)
     stats_dict['{}_precision'.format(mode)].append(precision)
     stats_dict['{}_recall'.format(mode)].append(recall)

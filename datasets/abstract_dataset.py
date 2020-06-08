@@ -15,8 +15,7 @@ import pdb
 METAFILE_NOTFOUND_ERR = "Metadata file {} could not be parsed! Exception: {}!"
 LOAD_FAIL_MSG = "Failed to load image: {}\nException: {}"
 
-
-DATASET_ITEM_KEYS = ['y']
+DATASET_ITEM_KEYS = ['y', 'x', 'id', 'string', 'string_lens']
 
 class Abstract_Dataset(data.Dataset):
     """
@@ -26,7 +25,7 @@ class Abstract_Dataset(data.Dataset):
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, args, img_transformers, tnsr_transformers, split_group):
+    def __init__(self, args,  split_group):
         '''
         params: args - config.
         params: transformer - A transformer object, takes in a PIL image, performs some transforms and returns a Tensor
@@ -40,7 +39,7 @@ class Abstract_Dataset(data.Dataset):
 
         self.split_group = split_group
         self.args = args
-        self.image_loader = image_loader(img_transformers, tnsr_transformers, args)
+        
         try:
             self.metadata_json = json.load(open(args.metadata_path, 'r'))
         except Exception as e:
@@ -50,15 +49,6 @@ class Abstract_Dataset(data.Dataset):
 
         if len(self.dataset) == 0:
             return
-
-        label_dist = [d['y'] for d in self.dataset]
-        label_counts = Counter(label_dist)
-        weight_per_label = 1./ len(label_counts)
-        label_weights = { label: weight_per_label/count for label, count in label_counts.items()}
-        # if args.class_bal:
-        if self.task is not 'regression':
-            print("Label weights are {}".format(label_weights))
-            self.weights = [ label_weights[d['y']] for d in self.dataset]
 
     @property
     @abstractmethod
@@ -112,31 +102,4 @@ class Abstract_Dataset(data.Dataset):
         return len(self.dataset)
 
     def __getitem__(self, index):
-        return self.get_image_item(index)
-
-
-    def get_image_item(self, index):
-        sample = self.dataset[index]
-
-        ''' Region annotation for each image. Dict for single image,
-            list of dict for multi-image
-        '''
-        try:
-            x = self.image_loader.get_image(os.path.join(self.args.img_dir, sample['path']))
-
-            item = {
-                'x': x,
-                'path': os.path.join(self.args.img_dir, sample['path']),
-                'y': sample['y']
-            }
-
-            for key in DATASET_ITEM_KEYS:
-                if key in sample:
-                    item[key] = sample[key]
-
-            return item
-
-        except Exception:
-            warnings.warn(LOAD_FAIL_MSG.format(sample['path'], traceback.print_exc()))
-
-
+        return self.dataset[index]

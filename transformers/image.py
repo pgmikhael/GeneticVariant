@@ -5,7 +5,7 @@ import os
 import sys
 import os.path
 import warnings
-from transformers.transforms import ComposeTrans
+from transformers.image_transforms import ComposeTrans
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 import pdb 
 

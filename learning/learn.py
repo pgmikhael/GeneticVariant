@@ -9,11 +9,14 @@ from torch.utils import data
 from models.model_factory import save_model, load_model
 import numpy as np
 import pdb
+from torch.nn.utils.rnn import pack_padded_sequence
 
-def run_model(x, y, batch, model, optimizer, crit, mode, args):     
-    probs = model(x)
+def run_model(x, y, batch, model, optimizer, crit, mode, args): 
+    h0 = model.initHidden(x)    
+    x = pack_padded_sequence(x, batch['string_lens'], enforce_sorted=True)
+    probs = model(x, h0)
     B, C = probs.shape
-    if C > 1:
+    if args.num_classes > 1:
         loss = crit(probs, y)    # compute loss
         preds = torch.softmax(probs, dim = -1)
         probs, preds = torch.topk(preds, k = 1)
@@ -46,14 +49,13 @@ def epoch_pass(data_loader, model, optimizer, crit, mode, args):
     with tqdm(data_loader, total = len(data_loader), ncols = 60) as tqdm_bar:#total=args.num_batches_per_epoch)
         for batch in data_loader:
             x, y, batch = prepare_batch(batch, args)
-            
-            args.num_followers = batch['followers']
+            x = x.transpose(1,0)
 
             if batch is None:
                 warnings.warn('Empty batch')
                 continue
             
-            loss, batch_preds, batch_probs, batch_golds = run_model(x.float(), y, batch, model, optimizer, crit, mode, args)
+            loss, batch_preds, batch_probs, batch_golds = run_model(x, y, batch, model, optimizer, crit, mode, args)
 
             batch_loss = loss.cpu().data.item()
 
@@ -73,11 +75,8 @@ def epoch_pass(data_loader, model, optimizer, crit, mode, args):
                 probs.extend(batch_probs.detach().numpy())
                 golds.extend(batch_golds.detach().numpy())
 
-            # i+=1
             tqdm_bar.update()
-            # if i > args.num_batches_per_epoch:
-            #     data_iter.__del__()
-            #     break
+
     
     # format golds, preds, probs, avg_loss
     avg_loss = np.mean(np.array(losses))
@@ -199,6 +198,15 @@ def l1_regularization(model):
     return regularization_loss
 
 def prepare_batch(batch, args):
+    # sort batch
+    original_lens = batch['string_lens'].tolist()
+    indices = torch.argsort(batch['string_lens'], descending = True)
+    for key, val in batch.items():
+        if not isinstance(val, list):
+            batch[key] = batch[key][indices]
+        else:
+            batch[key] = [x for x,_ in sorted(zip(val, original_lens), key = lambda p:p[1], reverse=True)]
+
     x, y = batch['x'], batch['y']
     if args.cuda:
         x, y = x.to(args.device), y.to(args.device)

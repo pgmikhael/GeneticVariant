@@ -28,9 +28,9 @@ def get_dataset_class(args):
     return DATASET_REGISTRY[args.dataset]
 
 
-def get_dataset(args, img_transformers, tnsr_transformers, split_group):
+def get_dataset(args,  split_group):
     dataset_class = get_dataset_class(args)
-    dataset  =  dataset_class(args, img_transformers, tnsr_transformers, split_group)
+    dataset  =  dataset_class(args, split_group)
     
     return dataset
 

@@ -8,12 +8,15 @@ import time
 import os
 from copy import copy
 from datasets.abstract_dataset import Abstract_Dataset
-from helpers.classes import Ddict
+import string 
 
-METADATA_FILENAMES = {"prediction": "jsonfile.json"}
+ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
+NUM_ALL_LETTERS = len(ALL_LETTERS)
 
-@RegisterDataset("dataset")
-class Dataset(Abstract_Dataset):
+METADATA_FILENAMES = {"prediction": "variant_classification_dataset.json"}
+
+@RegisterDataset("variant_names")
+class GeneticVariants(Abstract_Dataset):
 
     def create_dataset(self, split_group):
         """
@@ -22,24 +25,30 @@ class Dataset(Abstract_Dataset):
         :split_group: - ['train'|'dev'|'test'].
         """
         dataset = []
-        for user_row in tqdm(self.metadata_json):
-            user_id, split, inputs = user_row['user_id'], user_row['split'], user_row['input']
+        for row in tqdm(self.metadata_json):
+            str_id, split, string, y, label =  row['id'], row['split'], row['x'], row['y'], row['label']
 
             if not split == split_group:
                 continue
 
-            for i, input in enumerate(inputs):
+            if len(string) > self.args.max_str_len:
+                continue
+            
+            if not self.args.computing_stats:
+                x = self.pad_tensor(strToTensor(string))
+            else:
+                x = string
 
-                y = self.get_label(input, self.args.task) 
-
-                for img in input['imgs']:
-                    if img is not None and os.path.exists(os.path.join(self.args.img_dir, img)):
-                        dataset.append({
-                            'user_id': user_id,
-                            'path': img,
-                            'y': y,
-                        })
-
+            dataset.append({
+                'id': str_id,
+                'x': x,
+                'y': y,
+                'label': label,
+                'string': string,
+                'string_lens': len(string)
+            })
+        
+        #dataset = sorted(dataset, key = lambda row: row['string_lens'], reverse=True)
         return dataset
 
 
@@ -52,8 +61,22 @@ class Dataset(Abstract_Dataset):
 
     @staticmethod
     def set_args(args):
-        args.num_classes = 1
+        args.num_classes = 3
+        args.input_dim = NUM_ALL_LETTERS
 
     @property
     def task(self):
         return "prediction"
+
+    def pad_tensor(self, tensor):
+        pad_tensor = torch.zeros(self.args.seq_len - tensor.shape[0], NUM_ALL_LETTERS)
+        return torch.cat([tensor,pad_tensor], dim = 0 )
+
+
+def strToTensor(line):
+    tensor = torch.zeros(len(line), NUM_ALL_LETTERS)
+    for letter_index, letter in enumerate(line):
+        one_hot_index = ALL_LETTERS.find(letter)
+        tensor[letter_index, one_hot_index] = 1
+    return tensor
+
