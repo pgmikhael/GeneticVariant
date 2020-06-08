@@ -1,0 +1,5 @@
+{
+	"path_to_twilio_secret": "/afs/csail.mit.edu/u/p/pgmikhael/secrets/oauth_cred.json",
+        "alert_emails": ["pgmikhael@csail.mit.edu", "pgmikhael@gmail.com"],
+	"suppress_alerts":false
+}

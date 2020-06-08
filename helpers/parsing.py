@@ -12,12 +12,12 @@ POSS_VAL_NOT_LIST = 'Flag {} has an invalid list of values: {}. Length of list m
 def parse_args():
      parser = argparse.ArgumentParser(description='MLPIPE')
 
-     parser.add_argument('--oauth2_path', type = str, default = '/Users/petermikhael/Projects/oauth_cred.json')
+     parser.add_argument('--oauth2_path', type = str, default = '/afs/csail.mit.edu/u/p/pgmikhael/secrets/oauth_cred.json')
 
      # Dataset
      ## Development
      parser.add_argument('--dataset', type = str, default = 'variant_names')
-     parser.add_argument('--data_dir', type = str, default = '/Users/petermikhael/Google Drive/MIT/GeneticVariant/Varients_proteins_genetranscripts/')
+     parser.add_argument('--data_dir', type = str, default = '/Mounts/rbg-storage1/datasets/GeneticVariants/')
      parser.add_argument('--max_str_len',  type=int, default = 16, help='max string length')
 
      parser.add_argument('--num_layers', type = int, default = 1, help = 'num of rnns to stack')
@@ -71,8 +71,7 @@ def parse_args():
      # Directories and Files
      parser.add_argument('--viz_dir', type = str, help = 'dir to save visualizations')
      parser.add_argument('--snapshot_path', type = str, help = 'path to snapshot if using saved model')
-     parser.add_argument('--results_dir', type = str, default = '/Users/petermikhael/Projects/results', help = 'path to results dir')
-     parser.add_argument('--save_dir', type = str, default = '/Users/petermikhael/Projects/results', help = 'directory of models')
+     parser.add_argument('--save_dir', type = str, default = '/Mounts/rbg-storage1/results/geneticvars', help = 'directory of models')
      parser.add_argument('--results_path', type = str, help = 'defined either automatically by dispatcher.py or time in main.py. Keep without default')
 
      # CUDA

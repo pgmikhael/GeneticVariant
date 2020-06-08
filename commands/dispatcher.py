@@ -24,10 +24,10 @@ LOG_KEYS = ['results_path', 'model_path', 'log_path']
 SORT_KEY = 'dev_loss'
 
 parser = argparse.ArgumentParser(description='Dispatcher. For use information, see `doc/README.md`')
-parser.add_argument('--config_path', type = str, required = True, default = '/Users/petermikhael/pgmikhael.github.io/nab/configs/nba_configs.json', help = 'path to model configurations json file')
-parser.add_argument('--log_dir', type=str, default="/Users/petermikhael/pgmikhael.github.io/nab_models_results/nab_grid_search", help="path to store logs and detailed job level result files")
+parser.add_argument('--config_path', type = str, required = True, default = 'configs/configs.json', help = 'path to model configurations json file')
+parser.add_argument('--log_dir', type=str, default="grid_search/", help="path to store logs and detailed job level result files")
 parser.add_argument('--result_path', type=str, default="/grid_search.csv", help="path to store grid_search table.")
-
+parser.add_argument("--alert_config_path", type=str, default='configs/alert_config.json', help="Path of alert config")
 
 def launch_experiment(gpu, flag_string):
     '''
@@ -135,6 +135,11 @@ if __name__ == "__main__":
         sys.exit(1)
     experiment_config = json.load(open(args.config_path, 'r'))
     
+    if not os.path.exists(args.alert_config_path):
+        print(CONFIG_NOT_FOUND_MSG.format("alert", args.alert_config_path))
+        sys.exit(1)
+    alert_config = json.load(open(args.alert_config_path, 'r'))
+
     experiments, flags, experiment_axies = parsing.parse_dispatcher_config(experiment_config)
 
 
@@ -162,5 +167,4 @@ if __name__ == "__main__":
         summary = update_sumary_with_results(result_path, log_path, experiment_axies, summary)
         dump_result_string = SUCESSFUL_SEARCH_STR.format(args.result_path)
         print("({}/{}) \t {}".format(i+1, len(experiments), dump_result_string))
-    
-    yagmail_results(args.result_path, args.oauth2_path)
+    yagmail_results(dump_result_string, args.result_path, alert_config)
