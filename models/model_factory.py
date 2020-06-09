@@ -59,7 +59,7 @@ def get_model(args):
 
 def load_model(path, model, optimizer, args):
     if args.results_path is not None:
-        path = "{}_model.pt".format(args.results_path)
+        path = "{}_model.pt".format(os.path.join(args.save_dir, args.snapshot_id))
         
     print('\nLoading model from {}'.format(path))
     try:
@@ -86,7 +86,7 @@ def load_model(path, model, optimizer, args):
 
 def save_model(model, optimizer, epoch_stats, args):
     if args.results_path is not None:
-        path = "{}_model.pt".format(args.results_path)
+        path = "{}_model.pt".format(os.path.join(args.save_dir, args.snapshot_id))
     else:
         path = os.path.join(args.save_dir, "{}_{}_{}_model.pt".format(args.model_name, \
         args.dataset, args.run_time))
