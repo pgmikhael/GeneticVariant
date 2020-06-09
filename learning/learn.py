@@ -46,7 +46,6 @@ def epoch_pass(data_loader, model, optimizer, crit, mode, args):
     with tqdm(data_loader, total = len(data_loader), ncols = 60, position=0) as tqdm_bar:#total=args.num_batches_per_epoch)
         for batch in data_loader:
             x, y, batch = prepare_batch(batch, args)
-            x = x.transpose(1,0)
 
             if batch is None:
                 warnings.warn('Empty batch')
@@ -208,3 +207,4 @@ def prepare_batch(batch, args):
     if args.cuda:
         x, y = x.to(args.device), y.to(args.device)
     return x, y, batch
+
