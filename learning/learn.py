@@ -9,6 +9,7 @@ from torch.utils import data
 from models.model_factory import save_model, load_model
 import numpy as np
 import pdb
+from helpers.learning_helpers import get_train_and_dev_dataset_loaders, l1_regularization
 
 def run_model(x, y, batch, model, optimizer, crit, mode, args): 
     probs = model(x, batch = batch)
@@ -94,19 +95,10 @@ def train_model(train_data, dev_data, model, optimizer, args):
 
     crit = get_criterion(args)
 
-    train_data_loader = data.DataLoader(
+    train_data_loader, dev_data_loader = get_train_and_dev_dataset_loaders(
+        args,
         train_data,
-        batch_size=args.batch_size,
-        num_workers=args.num_workers,
-        drop_last=False,
-        shuffle=True)
-
-    dev_data_loader = data.DataLoader(
-        dev_data,
-        batch_size=args.batch_size,
-        num_workers=args.num_workers,
-        drop_last=False,
-        shuffle=True)
+        dev_data)
 
     num_epoch_sans_improvement = 0
     if args.cuda:
@@ -187,11 +179,6 @@ def eval_model(eval_data, model, optimizer, mode, args):
     return epoch_stats
 
 
-def l1_regularization(model):
-    regularization_loss = 0
-    for param in model.parameters():
-        regularization_loss += torch.norm(param, p=1) # torch.sum(torch.abs(param))
-    return regularization_loss
 
 def prepare_batch(batch, args):
     # sort batch

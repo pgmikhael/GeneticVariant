@@ -63,6 +63,7 @@ def parse_args():
      parser.add_argument('--optimizer', type = str, default = 'adam', help = 'optimizer function')
      parser.add_argument('--criterion', type = str, default = 'cross_entropy', help = 'optimizer function')
      parser.add_argument('--tuning_metric', type = str, default= 'dev_loss', help = 'metric on which to tune model')
+     parser.add_argument('--class_bal', action='store_true', default = False, help = 'reweigh input distribution to create class balance')
      
      # Inference
      parser.add_argument('--plot_losses', action='store_true', default = False, help = 'whether to plot losses')

@@ -49,6 +49,20 @@ class Abstract_Dataset(data.Dataset):
 
         if len(self.dataset) == 0:
             return
+        
+        if 'dist_key' in self.dataset[0]:
+            dist_key = 'dist_key'
+        else:
+            dist_key = 'y'
+
+        label_dist = [d[dist_key] for d in self.dataset]
+        label_counts = Counter(label_dist)
+        weight_per_label = 1./ len(label_counts)
+        label_weights = {label: weight_per_label/count for label, count in label_counts.items()}
+
+        if args.class_bal:
+            print("Label weights are {}".format(label_weights))
+        self.weights = [ label_weights[d[dist_key]] for d in self.dataset]
 
     @property
     @abstractmethod
