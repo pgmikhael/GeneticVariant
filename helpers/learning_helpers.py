@@ -33,8 +33,7 @@ def get_train_and_dev_dataset_loaders(args, train_data, dev_data):
                 sampler=sampler,
                 pin_memory=True,
                 batch_size=args.batch_size,
-                collate_fn=ignore_None_collate,
-                shuffle=True)
+                collate_fn=ignore_None_collate)
     else:
         train_data_loader = data.DataLoader(
             train_data,
