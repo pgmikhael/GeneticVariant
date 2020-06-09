@@ -6,7 +6,7 @@ from email.mime.base import MIMEBase
 from email import encoders
 import os.path
 
-def yagmail_results(path, msg, alert_config):
+def yagmail_results(msg, path, alert_config):
 
     if alert_config['suppress_alerts']:
         return
