@@ -10,7 +10,7 @@ def yagmail_results(path, msg, alert_config):
 
     if alert_config['suppress_alerts']:
         return
-    if not os.path.exists(path_to_summary):
+    if not os.path.exists(path):
         return
     yag = yagmail.SMTP(oauth2_file = alert_config['path_to_twilio_secret'])
     yag.send(alert_config['alert_emails'], 'Genetic Vars Summary', [msg], attachments = path)
