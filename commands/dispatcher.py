@@ -46,7 +46,7 @@ def launch_experiment(gpu, flag_string):
     log_path = '{}.txt'.format(log_stem)
     results_path = "{}.rslt".format(log_stem)
 
-    experiment_string = "CUDA_VISIBLE_DEVICES={} python -u main.py {} --results_path {}".format(
+    experiment_string = "CUDA_VISIBLE_DEVICES={} python -u commands/main.py {} --results_path {}".format(
         gpu, flag_string, log_stem) #use log_stem instead of results_path, add extensions in main/learn.py
 
     # forward logs to logfile
