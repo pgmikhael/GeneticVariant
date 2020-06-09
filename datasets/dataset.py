@@ -25,7 +25,7 @@ class GeneticVariants(Abstract_Dataset):
         :split_group: - ['train'|'dev'|'test'].
         """
         dataset = []
-        for row in tqdm(self.metadata_json):
+        for row in tqdm(self.metadata_json, position=0):
             str_id, split, string, y, label =  row['id'], row['split'], row['x'], row['y'], row['label']
 
             if not split == split_group:

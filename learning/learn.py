@@ -9,12 +9,9 @@ from torch.utils import data
 from models.model_factory import save_model, load_model
 import numpy as np
 import pdb
-from torch.nn.utils.rnn import pack_padded_sequence
 
 def run_model(x, y, batch, model, optimizer, crit, mode, args): 
-    h0 = model.initHidden(x)    
-    x = pack_padded_sequence(x, batch['string_lens'], enforce_sorted=True)
-    probs = model(x, h0)
+    probs = model(x, batch = batch)
     B, C = probs.shape
     if args.num_classes > 1:
         loss = crit(probs, y)    # compute loss
@@ -46,7 +43,7 @@ def epoch_pass(data_loader, model, optimizer, crit, mode, args):
 
 
     #i = 0
-    with tqdm(data_loader, total = len(data_loader), ncols = 60) as tqdm_bar:#total=args.num_batches_per_epoch)
+    with tqdm(data_loader, total = len(data_loader), ncols = 60, position=0) as tqdm_bar:#total=args.num_batches_per_epoch)
         for batch in data_loader:
             x, y, batch = prepare_batch(batch, args)
             x = x.transpose(1,0)

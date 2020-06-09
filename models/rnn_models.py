@@ -1,7 +1,7 @@
 from models.model_factory import RegisterModel
 import torch.nn as nn
 import torch
-from torch.nn.utils.rnn import pad_packed_sequence
+from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
 
 @RegisterModel('gru')
 class GRU(nn.Module):
@@ -23,7 +23,9 @@ class GRU(nn.Module):
             bidirectional = False)
         self.fc = nn.Linear(args.hidden_dim*(1 + args.seq_len), args.num_classes)
 
-    def forward(self, x, h0, batch=None):
+    def forward(self, x, batch=None):
+        h0 = self.initHidden(x)
+        x = pack_padded_sequence(x, batch['string_lens'], enforce_sorted=True)
         output, h_n = self.gru(x, h0)
         output, str_lens = pad_packed_sequence(output, padding_value = 0, total_length=self.args.seq_len)
         _, B, _= output.shape

@@ -15,7 +15,6 @@
         "tuning_metric": ["dev_acc"],
         "dataset": ["variant_names"],
         "patience": [10],
-        "task": ["prediction"],
         "model_name": ["gru"],
         "get_dataset_stats": [false],
         "criterion": ["cross_entropy"],
