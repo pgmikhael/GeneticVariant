@@ -50,32 +50,22 @@ def get_model(args):
     if args.data_parallel:
         model = nn.DataParallel(model)
 
-    if args.cuda:
-        model.to(args.device)
+    model.to(args.device)
         
     optimizer = get_optimizer(model, args)
 
     return model, optimizer
 
 def load_model(path, model, optimizer, args):
-    if args.results_path is not None:
+    if args.snapshot_id is not None:
         path = "{}_model.pt".format(os.path.join(args.save_dir, args.snapshot_id))
         
     print('\nLoading model from {}'.format(path))
     try:
-        # if not args.cuda:
-        #     checkpoint = torch.load(path, map_location = torch.device('cpu'))
-        # else:
+        if not args.cuda:
+             checkpoint = torch.load(path, map_location = torch.device('cpu'))
         checkpoint = torch.load(path)
         model.load_state_dict(checkpoint['model_state_dict'])
-
-        if args.data_parallel:
-            model = nn.DataParallel(model)
-
-        if args.cuda:
-            model.to(args.device)
-
-
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         epoch_stats = checkpoint['epoch_stats']
         lr = checkpoint['lr']
@@ -85,7 +75,7 @@ def load_model(path, model, optimizer, args):
     return model, optimizer, lr, epoch_stats
 
 def save_model(model, optimizer, epoch_stats, args):
-    if args.results_path is not None:
+    if args.snapshot_id is not None:
         path = "{}_model.pt".format(os.path.join(args.save_dir, args.snapshot_id))
     else:
         path = os.path.join(args.save_dir, "{}_{}_{}_model.pt".format(args.model_name, \

@@ -16,6 +16,7 @@ def compute_eval_metrics(golds, preds, probs, loss, strings, args, stats_dict, m
     stats_dict['{}_preds'.format(mode)] = preds
     stats_dict['{}_golds'.format(mode)] = golds
     stats_dict['{}_probs'.format(mode)] = probs
+    stats_dict['{}_strings'.format(mode)] = strings
 
     if 'regression' in args.dataset:
         return regression_metrics(golds, preds, probs, loss, args, stats_dict, mode)
