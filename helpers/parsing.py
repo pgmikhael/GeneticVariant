@@ -47,6 +47,7 @@ def parse_args():
      # Learning
      parser.add_argument('--train_phase', action='store_true', default = False, help = 'whether training model')
      parser.add_argument('--test_phase', action='store_true', default = False, help = 'whether testing model')
+     parser.add_argument('--include_train_in_test_phase', action='store_true', default = False, help = 'whether include train in testing model')
      parser.add_argument('--resume', action='store_true', default = False, help = 'whether to resume from previous run')
      parser.add_argument('--init_lr', type = float, default = 0.0001, help = 'learning rate')
      parser.add_argument('--lr', type = float, default = 0.0001, help = 'learning rate')

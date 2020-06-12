@@ -45,6 +45,10 @@ if __name__ == '__main__':
         train_data = get_dataset(args, 'train')
         dev_data = get_dataset(args, 'dev')
 
+    if args.include_train_in_test_phase:
+        print("\nLoading data...")
+        train_data = get_dataset(args, 'train')
+    
     if args.test_phase:
         if not args.train_phase:
             print("\nLoading dev data...")
@@ -77,6 +81,8 @@ if __name__ == '__main__':
         print("\nBeginning Testing Phase:")
         model_stats['dev_stats'] = eval_model(dev_data, model, optimizer, 'dev', args)
         model_stats['test_stats'] = eval_model(test_data, model, optimizer, 'test', args)
+        if args.include_train_in_test_phase:
+            model_stats['train_stats'] = eval_model(train_data, model, optimizer, 'train', args)
 
 
     # Save results
