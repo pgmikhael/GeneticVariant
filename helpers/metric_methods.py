@@ -11,7 +11,7 @@ def init_metrics_dictionary(mode):
     stats_dict['best_epoch'] = 0
     return stats_dict
 
-def compute_eval_metrics(golds, preds, probs, loss, args, stats_dict, mode):
+def compute_eval_metrics(golds, preds, probs, loss, strings, args, stats_dict, mode):
     stats_dict['{}_loss'.format(mode)].append(loss)
     stats_dict['{}_preds'.format(mode)] = preds
     stats_dict['{}_golds'.format(mode)] = golds

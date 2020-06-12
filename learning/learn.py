@@ -34,6 +34,7 @@ def epoch_pass(data_loader, model, optimizer, crit, mode, args):
     probs = []
     golds = []
     losses = []
+    strings = []
     batch_loss = 0
 
     if mode == 'train':
@@ -71,6 +72,7 @@ def epoch_pass(data_loader, model, optimizer, crit, mode, args):
                 preds.extend(batch_preds.detach().numpy())
                 probs.extend(batch_probs.detach().numpy())
                 golds.extend(batch_golds.detach().numpy())
+            strings.extend(batch['string'])
 
             tqdm_bar.update()
 
@@ -81,7 +83,7 @@ def epoch_pass(data_loader, model, optimizer, crit, mode, args):
     probs = np.array(probs)
     golds = np.array(golds)
 
-    return golds, preds, probs, avg_loss
+    return golds, preds, probs, avg_loss, strings
 
 
 def train_model(train_data, dev_data, model, optimizer, args):
@@ -109,9 +111,9 @@ def train_model(train_data, dev_data, model, optimizer, args):
         if (epoch+1)%args.burn_in == 0:
             print("-------------\nEpoch {}:\n".format(epoch+1))
         for mode, data_loader in [('train', train_data_loader), ('dev', dev_data_loader)]:
-            golds, preds, probs, loss = epoch_pass(data_loader, model, optimizer, crit, mode, args)
+            golds, preds, probs, loss, strings = epoch_pass(data_loader, model, optimizer, crit, mode, args)
 
-            log_statement, epoch_stats = compute_eval_metrics(golds, preds, probs, loss, args, epoch_stats, mode)
+            log_statement, epoch_stats = compute_eval_metrics(golds, preds, probs, loss, strings, args, epoch_stats, mode)
             
             if (epoch+1)%args.burn_in == 0:
                 print(log_statement)
@@ -170,9 +172,9 @@ def eval_model(eval_data, model, optimizer, mode, args):
 
     crit = get_criterion(args)
 
-    golds, preds, probs, loss = epoch_pass(data_loader, model, optimizer, crit, mode, args)
+    golds, preds, probs, loss, strings = epoch_pass(data_loader, model, optimizer, crit, mode, args)
 
-    log_statement, epoch_stats = compute_eval_metrics(golds, preds, probs, loss, args, epoch_stats, mode)
+    log_statement, epoch_stats = compute_eval_metrics(golds, preds, probs, loss, strings, args, epoch_stats, mode)
     
     print(log_statement)
 
