@@ -73,7 +73,7 @@ def parse_args():
      parser.add_argument('--viz_dir', type = str, help = 'dir to save visualizations')
      parser.add_argument('--snapshot_path', type = str, help = 'path to snapshot if using saved model')
      parser.add_argument('--snapshot_id', type = str, help = 'snapshot id defined either automatically by dispatcher.py or time in main.py.')
-     parser.add_argument('--save_dir', type = str, default = '/Mounts/rbg-storage1/results/geneticvars', help = 'directory of models')
+     parser.add_argument('--save_dir', type = str, default = '/Mounts/rbg-storage1/snapshots/geneticvars', help = 'directory of models')
      parser.add_argument('--results_path', type = str, help = 'defined either automatically by dispatcher.py or time in main.py. Keep without default')
 
      # CUDA
