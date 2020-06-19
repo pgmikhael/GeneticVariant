@@ -8,12 +8,13 @@ COL2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
 parser = argparse.ArgumentParser(description='Variant Results.')
 parser.add_argument('--results_file', type = str, required = True, help = 'paths results')
 parser.add_argument('--output_path', type = str, default = 'variant_classification_dataset.csv')
+parser.add_argument('--splits', type = str, nargs = '+', default = 'train dev test')
 
 if __name__ == "__main__":
     args = parser.parse_args()
     results = pickle.load(open(args.results_file, 'rb'))
     summary = defaultdict(list)
-    for mode in ['train', 'dev', 'test']:
+    for mode in args.splits:
         split_size = len(results['{}_stats'.format(mode)]['{}_strings'.format(mode)])
         golds = [COL2Label[i] for i in results['{}_stats'.format(mode)]['{}_golds'.format(mode)] ]
         preds = [COL2Label[i] for i in results['{}_stats'.format(mode)]['{}_preds'.format(mode)] ]
