@@ -32,7 +32,10 @@ class GeneticVariants(Abstract_Dataset):
                 continue
 
             if len(string) > self.args.max_str_len:
-                continue
+                if self.args.truncate_string:
+                    string = string[:self.args.max_str_len]
+                else:
+                    continue
             
             if not self.args.computing_stats:
                 x = self.pad_tensor(strToTensor(string))
