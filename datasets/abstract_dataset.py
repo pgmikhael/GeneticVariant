@@ -15,7 +15,7 @@ import pdb
 METAFILE_NOTFOUND_ERR = "Metadata file {} could not be parsed! Exception: {}!"
 LOAD_FAIL_MSG = "Failed to load image: {}\nException: {}"
 
-DATASET_ITEM_KEYS = ['y', 'x', 'id', 'string', 'string_lens']
+DATASET_ITEM_KEYS = ['y', 'x', 'id', 'string', 'string_lens', 'original_str_ln']
 
 class Abstract_Dataset(data.Dataset):
     """

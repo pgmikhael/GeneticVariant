@@ -27,7 +27,7 @@ class GeneticVariants(Abstract_Dataset):
         dataset = []
         for row in tqdm(self.metadata_json, position=0):
             str_id, split, string, y, label =  row['id'], row['split'], row['x'], row['y'], row['label']
-
+            original_str_ln = len(string)
             if not split == split_group:
                 continue
 
@@ -48,7 +48,8 @@ class GeneticVariants(Abstract_Dataset):
                 'y': y,
                 'label': label,
                 'string': string,
-                'string_lens': len(string)
+                'string_lens': len(string),
+                'original_str_ln': original_str_ln
             })
         
         #dataset = sorted(dataset, key = lambda row: row['string_lens'], reverse=True)
