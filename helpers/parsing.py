@@ -42,7 +42,7 @@ def parse_args():
      parser.add_argument('--get_dataset_stats', action='store_true', default = False, help = 'whether to get mean, std of training set')
      parser.add_argument('--input_dim',  type=int, default=94, help='input dim size')
      parser.add_argument('--seq_len',  type=int, default=16, help='input dim size')
-     parser.add_argument('--task', type = str, default = 'prediction', help = 'task to run - defines dataset')
+     parser.add_argument('--task', type = str, default = 'baseline_prediction', help = 'task to run - defines dataset')
      parser.add_argument('--split_num', type = str, default = '7030', help = 'split to run - defines dataset splits')
 
      # Workers and GPUS

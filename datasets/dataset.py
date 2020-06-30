@@ -13,7 +13,9 @@ import string
 ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
 NUM_ALL_LETTERS = len(ALL_LETTERS)
 
-METADATA_FILENAMES = {"baseline_prediction": "variant_classification_dataset.json"}
+METADATA_FILENAMES = {
+    "baseline_prediction": "variant_classification_dataset.json",
+    "multi_split": "variant_classification_dataset_multisplits.json"}
 
 @RegisterDataset("variant_names")
 class GeneticVariants(Abstract_Dataset):
