@@ -6,14 +6,17 @@ import numpy as np
 parser = argparse.ArgumentParser(description='Variant Dataset Creator.')
 parser.add_argument('--excel_files', type = str, nargs = '+', required = True, help = 'paths excel sheets')
 parser.add_argument('--output_path', type = str, default = 'variant_classification_dataset.json')
+parser.add_argument('--split_probs', type = int, nargs = '+', help = 'train, dev, test split', default = '0.7 0.15 0.15')
 
 COL2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
-SPLIT_PROBS = [0.7, 0.15, 0.15]
+SPLIT_PROBS = [0.7, 0.15, 0.15] # baseline prediction task
 
 if __name__ == "__main__":
     args = parser.parse_args()
     dataset = []
     i = 0
+    if args.split_probs is not None:
+        SPLIT_PROBS = args.split_probs
 
     for excel_file in args.excel_files:
         mini_dataset = {}
