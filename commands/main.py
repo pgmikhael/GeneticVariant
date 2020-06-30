@@ -82,7 +82,7 @@ if __name__ == '__main__':
         model_stats['dev_stats'] = eval_model(dev_data, model, optimizer, 'dev', args)
         model_stats['test_stats'] = eval_model(test_data, model, optimizer, 'test', args)
         if args.include_train_in_test_phase:
-            model_stats['train_stats'] = eval_model(train_data, model, optimizer, 'train', args)
+            model_stats['train_eval_stats'] = eval_model(train_data, model, optimizer, 'train_eval', args)
 
 
     # Save results
