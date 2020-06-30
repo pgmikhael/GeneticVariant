@@ -35,10 +35,10 @@ class Abstract_Dataset(data.Dataset):
         '''
         super(Abstract_Dataset, self).__init__()
 
+        self.args = args
         args.metadata_path = os.path.join(args.data_dir, self.METADATA_FILENAME)
 
         self.split_group = split_group
-        self.args = args
         
         try:
             self.metadata_json = json.load(open(args.metadata_path, 'r'))
