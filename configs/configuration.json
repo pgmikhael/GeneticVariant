@@ -14,7 +14,7 @@
         "burn_in": [1],
         "tuning_metric": ["dev_accuracy"],
         "dataset": ["variant_names"],
-        "task": ["3070_split", "4060_split", "5050_split", "6040_split"],
+        "split_num": ["3070", "4060", "5050", "6040"],
         "patience": [1],
         "model_name": ["gru"],
         "get_dataset_stats": [false],

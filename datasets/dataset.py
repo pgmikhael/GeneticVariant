@@ -13,12 +13,7 @@ import string
 ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
 NUM_ALL_LETTERS = len(ALL_LETTERS)
 
-METADATA_FILENAMES = {
-    "baseline_prediction": "variant_classification_dataset.json",
-    "3070_split": "variant_classification_dataset_3070.json",
-    "4060_split": "variant_classification_dataset_3070.json",
-    "5050_split": "variant_classification_dataset_3070.json",
-    "6040_split": "variant_classification_dataset_3070.json"}
+METADATA_FILENAMES = {"baseline_prediction": "variant_classification_dataset.json"}
 
 @RegisterDataset("variant_names")
 class GeneticVariants(Abstract_Dataset):
@@ -31,7 +26,7 @@ class GeneticVariants(Abstract_Dataset):
         """
         dataset = []
         for row in tqdm(self.metadata_json, position=0):
-            str_id, split, string, y, label =  row['id'], row['split'], row['x'], row['y'], row['label']
+            str_id, split, string, y, label =  row['id'], row['split_{}'.format(self.args.split_num)], row['x'], row['y'], row['label']
             original_str_ln = len(string)
             if not split == split_group:
                 continue

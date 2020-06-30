@@ -14,10 +14,14 @@ SPLIT_PROBS = [[0.7, 0.15, 0.15]] # baseline prediction task
 
 def parse_probs(split_probs):
     list_of_prob_splits = []
+    list_of_prob_splits_names = []
     prob_list_str = split_probs.split('/')
     for prob_list in prob_list_str:
-        list_of_prob_splits.append(ast.literal_eval(prob_list))
-    return list_of_prob_splits
+        prob_list = ast.literal_eval(prob_list)
+        list_of_prob_splits.append(prob_list)
+        name = '{}{}'.format(int(prob_list[0]*100), int(sum(prob_list[1:])*100))
+        list_of_prob_splits_names.append(name)
+    return list(zip(list_of_prob_splits_names, list_of_prob_splits))
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -37,7 +41,7 @@ if __name__ == "__main__":
         metadata[first_col_name].replace('', np.nan, inplace=True)
         metadata.dropna(subset=[first_col_name], inplace=True)
 
-        for i, prob_split in enumerate(SPLIT_PROBS):
+        for i, prob_split in SPLIT_PROBS:
             mini_dataset['split_{}'.format(i)] = np.random.choice(['train', 'dev', 'test'], p = prob_split, size = metadata.shape[0]).tolist()
         mini_dataset['id'] = np.arange(0,metadata.shape[0])
         mini_dataset['x'] = list(metadata[first_col_name])
