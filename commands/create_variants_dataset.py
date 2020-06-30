@@ -7,7 +7,7 @@ import ast
 parser = argparse.ArgumentParser(description='Variant Dataset Creator.')
 parser.add_argument('--excel_files', type = str, nargs = '+', required = True, help = 'paths excel sheets')
 parser.add_argument('--output_path', type = str, default = 'variant_classification_dataset.json')
-parser.add_argument('--split_probs', type = float, nargs = '+', help = 'train, dev, test split', default = '0.7 0.15 0.15')
+parser.add_argument('--split_probs', type = str, help = 'train, dev, test split', default = '[0.7,0.15,0.15]/[0.6, 0.2, 0.2]')
 
 COL2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
 SPLIT_PROBS = [[0.7, 0.15, 0.15]] # baseline prediction task
