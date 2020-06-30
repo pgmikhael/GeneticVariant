@@ -13,7 +13,12 @@ import string
 ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
 NUM_ALL_LETTERS = len(ALL_LETTERS)
 
-METADATA_FILENAMES = {"prediction": "variant_classification_dataset.json"}
+METADATA_FILENAMES = {
+    "baseline_prediction": "variant_classification_dataset.json",
+    "3070_split": "variant_classification_dataset_3070.json",
+    "4060_split": "variant_classification_dataset_3070.json",
+    "5050_split": "variant_classification_dataset_3070.json",
+    "6040_split": "variant_classification_dataset_3070.json"}
 
 @RegisterDataset("variant_names")
 class GeneticVariants(Abstract_Dataset):
@@ -70,7 +75,7 @@ class GeneticVariants(Abstract_Dataset):
 
     @property
     def task(self):
-        return "prediction"
+        return self.args.task # "prediction"
 
     def pad_tensor(self, tensor):
         pad_tensor = torch.zeros(self.args.seq_len - tensor.shape[0], NUM_ALL_LETTERS)
