@@ -6,7 +6,7 @@
         "num_epochs": [5],
         "batch_size": [24],
         "optimizer": ["adam"],
-        "train_phase": [false],
+        "train_phase": [true],
         "test_phase": [true],
         "use_dropout": [true],
         "weight_decay": [5e-3],
@@ -27,10 +27,9 @@
         "num_layers": [1, 2],
         "seq_len": [16],
         "class_bal": [true],
-        "truncate_string": [true],
-	"snapshot_path": ["/Mounts/rbg-storage1/results/geneticvars/gru_variant_names_06092020-035939_model.pt"]
+        "truncate_string": [true]
     },
-    "available_gpus": ["0,1", "2,3", "4,5", "6,7"],
+    "available_gpus": ["0,1", "2,3", "0,1", "2,3"],
     "cuda": true,
     "data_parallel": true,
     "save_dir": "/Mounts/rbg-storage1/results/geneticvars"
