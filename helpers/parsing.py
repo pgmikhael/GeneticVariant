@@ -19,7 +19,7 @@ def parse_args():
      parser.add_argument('--dataset', type = str, default = 'variant_names')
      parser.add_argument('--data_dir', type = str, default = '/Mounts/rbg-storage1/datasets/GeneticVariants/')
      parser.add_argument('--max_str_len',  type=int, default = 16, help='max string length')
-     parser.add_argument('--truncate_string',  type=int, default = 16, help='truncate to max string len?. if so, this will offset str len filter.')
+     parser.add_argument('--truncate_string',  action='store_true', default = False,  help='truncate to max string len?. if so, this will offset str len filter.')
      
 
      parser.add_argument('--num_layers', type = int, default = 1, help = 'num of rnns to stack')
