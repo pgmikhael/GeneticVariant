@@ -2,21 +2,29 @@ import pandas as pd
 import argparse
 import json
 import numpy as np 
+import ast 
 
 parser = argparse.ArgumentParser(description='Variant Dataset Creator.')
 parser.add_argument('--excel_files', type = str, nargs = '+', required = True, help = 'paths excel sheets')
 parser.add_argument('--output_path', type = str, default = 'variant_classification_dataset.json')
-parser.add_argument('--split_probs', type = int, nargs = '+', help = 'train, dev, test split', default = '0.7 0.15 0.15')
+parser.add_argument('--split_probs', type = int, nargs = '+', help = 'train, dev, test split', default = '[0.7, 0.15, 0.15]/[0.6,0.2,0.2]')
 
 COL2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
-SPLIT_PROBS = [0.7, 0.15, 0.15] # baseline prediction task
+SPLIT_PROBS = [[0.7, 0.15, 0.15]] # baseline prediction task
+
+def parse_probs(split_probs):
+    list_of_prob_splits = []
+    prob_list_str = split_probs.split('/')
+    for prob_list in prob_list_str:
+        list_of_prob_splits.append(ast.literal_eval(prob_list))
+    return list_of_prob_splits
 
 if __name__ == "__main__":
     args = parser.parse_args()
     dataset = []
     i = 0
     if args.split_probs is not None:
-        SPLIT_PROBS = args.split_probs
+        SPLIT_PROBS = parse_probs(args.split_probs)
 
     for excel_file in args.excel_files:
         mini_dataset = {}
@@ -27,7 +35,8 @@ if __name__ == "__main__":
         metadata[first_col_name].replace('', np.nan, inplace=True)
         metadata.dropna(subset=[first_col_name], inplace=True)
 
-        mini_dataset['split'] = np.random.choice(['train', 'dev', 'test'], p = SPLIT_PROBS, size = metadata.shape[0]).tolist()
+        for i, prob_split in enumerate(SPLIT_PROBS):
+            mini_dataset['split_{}'.format(i)] = np.random.choice(['train', 'dev', 'test'], p = prob_split, size = metadata.shape[0]).tolist()
         mini_dataset['id'] = np.arange(0,metadata.shape[0])
         mini_dataset['x'] = list(metadata[first_col_name])
         y = np.argmax(np.sum(metadata.iloc[:,1:], axis = 0).tolist())
