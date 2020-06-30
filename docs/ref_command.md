@@ -12,7 +12,7 @@
 - 'sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"'
 
 ## Make dataset
-python -m pdb commands/create_variants_dataset.py --excel_files /Mounts/rbg-storage1/datasets/GeneticVariants/ML_DNA_Variants.xlsx /Mounts/rbg-storage1/datasets/GeneticVariants/ML_Protein.xlsx /Mounts/rbg-storage1/datasets/GeneticVariants/ML_TranscriptOfGene.xlsx --output_path /Mounts/rbg-storage1/datasets/GeneticVariants/variant_classification_dataset_6040.json --split_probs [0.6, 0.2, 0.2]/[0.5, 0.25, 0.25]/[0.4, 0.3, 0.3]/[0.3, 0.35, 0.35]/[0.2, 0.4, 0.4]
+python -m pdb commands/create_variants_dataset.py --excel_files /Mounts/rbg-storage1/datasets/GeneticVariants/ML_DNA_Variants.xlsx /Mounts/rbg-storage1/datasets/GeneticVariants/ML_Protein.xlsx /Mounts/rbg-storage1/datasets/GeneticVariants/ML_TranscriptOfGene.xlsx --output_path /Mounts/rbg-storage1/datasets/GeneticVariants/variant_classification_dataset_6040.json --split_probs [0.6,0.2,0.2]/[0.5,0.25,0.25]/[0.4,0.3,0.3]/[0.3,0.35,0.35]/[0.2,0.4,0.4]
 
 ## Dispatcher
 python -m pdb commands/dispatcher.py --config_path configs/configuration.json --alert_config_path configs/pgm_alert_config.json --log_dir /Mounts/rbg-storage1/logs/geneticvars/ --result_path /Mounts/rbg-storage1/users/pgmikhael/result_summaries/geneticvars_baselines_06042020.csv

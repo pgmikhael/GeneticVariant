@@ -41,8 +41,8 @@ if __name__ == "__main__":
         metadata[first_col_name].replace('', np.nan, inplace=True)
         metadata.dropna(subset=[first_col_name], inplace=True)
 
-        for i, prob_split in SPLIT_PROBS:
-            mini_dataset['split_{}'.format(i)] = np.random.choice(['train', 'dev', 'test'], p = prob_split, size = metadata.shape[0]).tolist()
+        for prob_name, prob_split in SPLIT_PROBS:
+            mini_dataset['split_{}'.format(prob_name)] = np.random.choice(['train', 'dev', 'test'], p = prob_split, size = metadata.shape[0]).tolist()
         mini_dataset['id'] = np.arange(0,metadata.shape[0])
         mini_dataset['x'] = list(metadata[first_col_name])
         y = np.argmax(np.sum(metadata.iloc[:,1:], axis = 0).tolist())
