@@ -1,2 +1,2 @@
-# MLPipe
-pipeline for ML projects
+# Classifying Variant
+Project to classify variant names as either genetic or proteins. 
