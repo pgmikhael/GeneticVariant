@@ -7,7 +7,7 @@ import argparse
 
 ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
 NUM_ALL_LETTERS = len(ALL_LETTERS)
-MODEL_PATH = '/Mounts/rbg-storage1/results/geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model.pt'
+MODEL_PATH = '/Mounts/rbg-storage1/results/geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model_nodevice.pt'
 MAX_STR_LEN = 16
 IDX2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
 
@@ -85,7 +85,8 @@ if __name__ == "__main__":
     x, len_x = prepare_input(input_string)
     batch = {'string_lens': len(input_string)}
     x = x.unsqueeze(0)
-    model = torch.load(MODEL_PATH)
+    model = GRU()
+    model = torch.load(MODEL_PATH, map_location = torch.device('cpu'))
     model.eval()
     with torch.no_grad():
         name_class = run_model(x, batch, model)
