@@ -10,7 +10,7 @@ NUM_ALL_LETTERS = len(ALL_LETTERS)
 MODEL_PATH = '/Mounts/rbg-storage1/results/geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model_nodevice.pt'
 MAX_STR_LEN = 16
 IDX2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
-
+RESULT = 'Prediction for {}: {}'
     
 parser = argparse.ArgumentParser(description='Run Variant Name Classification')
 parser.add_argument('--input_string', type = str, default = 'Input, currently a single string')
@@ -52,8 +52,6 @@ class GRU(nn.Module):
     def initHidden(self, x):
         B, _, _ = x.shape
         h0 = torch.zeros(self.num_layers, B,  self.hidden_dim)
-        if self.args.cuda:
-            h0 = h0.to(self.device)
         return h0
 
 def strToTensor(line):
@@ -83,13 +81,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     input_string = args.input_string
     x, len_x = prepare_input(input_string)
-    batch = {'string_lens': len(input_string)}
+    batch = {'string_lens':  torch.tensor( [len(input_string)] , dtype = torch.int64)}
     x = x.unsqueeze(0)
     model = GRU()
-    model = torch.load(MODEL_PATH, map_location = torch.device('cpu'))
-    model.eval()
+    model.load_state_dict( torch.load(MODEL_PATH, map_location = torch.device('cpu')) )
     with torch.no_grad():
         name_class = run_model(x, batch, model)
     
-    print(name_class)
+    print(RESULT.format(input_string, name_class.upper()))
     
