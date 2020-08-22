@@ -1,9 +1,9 @@
 {
     "search_space":{
-        "init_lr": [1e-03, 1e-2, 1e-1],
+        "init_lr": [1e-03, 1e-1],
         "lr_decay": [0.1],
         "dropout": [0.3],
-        "num_epochs": [5],
+        "num_epochs": [1, 10],
         "batch_size": [24],
         "optimizer": ["adam"],
         "train_phase": [true],
@@ -14,7 +14,7 @@
         "burn_in": [1],
         "tuning_metric": ["dev_accuracy"],
         "dataset": ["variant_names"],
-        "split_num": ["3070", "4060", "5050", "6040"],
+        "split_num": ["2080"],
         "task": ["multi_split"],
         "patience": [1],
         "model_name": ["gru"],
@@ -24,13 +24,13 @@
         "data_dir": ["/Mounts/rbg-storage1/datasets/GeneticVariants/"],
         "max_str_len": [16],
         "input_dim": [94],
-        "hidden_dim": [4, 16],
-        "num_layers": [1, 2],
+        "hidden_dim": [4],
+        "num_layers": [1],
         "seq_len": [16],
         "class_bal": [true],
         "truncate_string": [true]
     },
-    "available_gpus": ["0,1", "2,3", "0,1", "2,3"],
+    "available_gpus": ["0,1,2,3"],
     "cuda": true,
     "data_parallel": true,
     "save_dir": "/Mounts/rbg-storage1/results/geneticvars"
