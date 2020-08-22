@@ -4,10 +4,12 @@ from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 import string 
 import argparse 
 
-
+'''
+To test, run: python eval_on_server.py --input_string 'c.(2389+1_2390-1)_(2547+1_2548-1)del'
+'''
 ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
 NUM_ALL_LETTERS = len(ALL_LETTERS)
-MODEL_PATH = '/Mounts/rbg-storage1/results/geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model_nodevice.pt'
+MODEL_PATH = 'geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model_nodevice.pt'
 MAX_STR_LEN = 16
 IDX2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
 RESULT = 'Prediction for {}: {}'
