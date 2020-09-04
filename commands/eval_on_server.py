@@ -83,7 +83,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     input_string = args.input_string
     x, len_x = prepare_input(input_string)
-    batch = {'string_lens':  torch.tensor( [len(input_string)] , dtype = torch.int64)}
+    batch = {'string_lens':  torch.tensor( [len_x] , dtype = torch.int64)}
     x = x.unsqueeze(0)
     model = GRU()
     model.load_state_dict( torch.load(MODEL_PATH, map_location = torch.device('cpu')) )
