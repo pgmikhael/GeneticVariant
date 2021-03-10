@@ -9,13 +9,15 @@ To test, run: python eval_on_server.py --input_string 'c.(2389+1_2390-1)_(2547+1
 '''
 ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
 NUM_ALL_LETTERS = len(ALL_LETTERS)
-MODEL_PATH = 'geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model_nodevice.pt'
+MODEL_PATH = '/Mounts/rbg-storage1/results/geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model_nodevice.pt'
 MAX_STR_LEN = 16
 IDX2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
-RESULT = 'Prediction for {}: {}'
+RESULT = 'Saved predictions file to: {}'
     
 parser = argparse.ArgumentParser(description='Run Variant Name Classification')
-parser.add_argument('--input_string', type = str, default = 'Input, currently a single string')
+parser.add_argument('--input_textfile_path', type = str, help = 'Path to .txt file containing one variant name per line.')
+parser.add_argument('--output_textfile_path', type = str, help = 'Path to .txt file where predictions are saved.')
+parser.add_argument('--batch_size', type = int, default = 100, help = 'Size of batch to run through model in one step.')
 
 class GRU(nn.Module):
     def __init__(self):
@@ -68,7 +70,7 @@ def pad_tensor(tensor):
     return torch.cat([tensor,pad_tensor], dim = 0 )
 
 def prepare_input(line):
-    line = input_string[:MAX_STR_LEN]
+    line = line[:MAX_STR_LEN]
     x = pad_tensor(strToTensor(line))
     return x, len(line)
 
@@ -76,19 +78,38 @@ def run_model(x, batch, model):
     probs = model(x, batch = batch)
     preds = torch.softmax(probs, dim = -1)
     probs, preds = torch.topk(preds, k = 1)
-    #probs, preds = probs.view(B), preds.view(B)
-    return IDX2Label[preds.item()]
+    probs, preds = probs.view(-1), preds.view(-1)
+    return [IDX2Label[p.item()] for p in preds]
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    input_string = args.input_string
-    x, len_x = prepare_input(input_string)
-    batch = {'string_lens':  torch.tensor( [len_x] , dtype = torch.int64)}
-    x = x.unsqueeze(0)
+    
+    # LOAD MODEL
     model = GRU()
     model.load_state_dict( torch.load(MODEL_PATH, map_location = torch.device('cpu')) )
-    with torch.no_grad():
-        name_class = run_model(x, batch, model)
+    model.eval()
+
+    # READ INPUT
+    with open(args.input_textfile_path, 'r') as f:
+        raw_strings = f.readlines()
+
+    raw_strings = [input_string.split('\n')[0] for input_string in raw_strings]
     
-    print(RESULT.format(input_string, name_class.upper()))
+    batches = [ raw_strings[ i: i+ args.batch_size] for i in range(0, len(raw_strings),  args.batch_size)]
+    for input_strings in batches:
+        inputs_list = [prepare_input(input_string) for input_string in input_strings]
+        inputs_list = sorted(inputs_list, key = lambda row: row[1], reverse=True)
+
+        batch = { 
+                'x': torch.stack([ i[0] for i in inputs_list]),
+                'string_lens': torch.tensor( [i[1] for i in inputs_list], dtype = torch.int64)
+        }
+        
+        with torch.no_grad():
+            name_classes = run_model(batch['x'], batch, model)
     
+        with open(args.output_textfile_path, 'a') as f:
+            for input_str, pred in zip(input_strings, name_classes):
+                f.write('{}, {}\n'.format(input_str, pred))
+
+    print(RESULT.format(args.output_textfile_path))
