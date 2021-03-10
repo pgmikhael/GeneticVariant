@@ -5,7 +5,7 @@ import string
 import argparse 
 
 '''
-To test, run: python eval_on_server.py --input_string 'c.(2389+1_2390-1)_(2547+1_2548-1)del'
+To test, run: python eval_on_server.py --input_textfile_path /path/to/input_file.txt --output_textfile_path /path/to/output_file.txt
 '''
 ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
 NUM_ALL_LETTERS = len(ALL_LETTERS)
