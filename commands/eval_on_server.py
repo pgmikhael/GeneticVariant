@@ -15,8 +15,8 @@ IDX2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
 RESULT = 'Saved predictions file to: {}'
     
 parser = argparse.ArgumentParser(description='Run Variant Name Classification')
-parser.add_argument('--input_textfile_path', type = str, help = 'Path to .txt file containing one variant name per line.')
-parser.add_argument('--output_textfile_path', type = str, help = 'Path to .txt file where predictions are saved.')
+parser.add_argument('--input_textfile_path', type = str, required = True, help = 'Path to .txt file containing one variant name per line.')
+parser.add_argument('--output_textfile_path', type = str, required = True, help = 'Path to .txt file where predictions are saved.')
 parser.add_argument('--batch_size', type = int, default = 100, help = 'Size of batch to run through model in one step.')
 
 class GRU(nn.Module):
