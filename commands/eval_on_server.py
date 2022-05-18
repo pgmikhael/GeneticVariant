@@ -9,7 +9,7 @@ To test, run: python eval_on_server.py --input_textfile_path /path/to/input_file
 '''
 ALL_LETTERS = string.punctuation + string.ascii_letters + string.digits
 NUM_ALL_LETTERS = len(ALL_LETTERS)
-MODEL_PATH = 'geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model_nodevice.pt'
+MODEL_PATH = '/Mounts/rbg-storage1/results/geneticvars/b8dbad27fb4da4206a2e07ed730dd951_model_nodevice.pt'
 MAX_STR_LEN = 16
 IDX2Label = {0:'transcript', 1: 'dna', 2: 'protein'}
 RESULT = 'Saved predictions file to: {}'
